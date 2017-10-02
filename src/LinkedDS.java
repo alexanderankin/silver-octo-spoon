@@ -35,14 +35,50 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
   }
 
   public LinkedDS (LinkedDS l) {
-    numOfEntries = 0;
+    numOfEntries = l.size();
+    
+    for (int i; i < numOfEntries; i++) {
+      T temp = l.removeItem();;
+
+    }
+  }
+
+  /**
+   * Return a string representation of elements separated by a space and
+   * trailing space.
+   */
+  @Override
+  public String toString() {
+    Node<T> pointer = firstNode;
+    if (pointer == null)
+      return "";
+    StringBuilder sb = new StringBuilder();
+    do {
+
+      sb.append(pointer.getData().toString());
+      sb.append(" ");
+      pointer = pointer.getNext();
+    } while (pointer != firstNode);
+    return sb.toString();
   }
 
   public void debug() {
     Node<T> n = firstNode;
     do {
+      if (n == null) break;
       System.out.println(n.getData());
       n = n.getNext();
+    } while (n != firstNode);
+
+    System.out.println("done printing");
+  }
+  
+  public void debugBack() {
+    Node<T> n = firstNode;
+    do {
+      if (n == null) break;
+      System.out.println(n.getData());
+      n = n.getPrev();
     } while (n != firstNode);
 
     System.out.println("done printing");
@@ -65,13 +101,10 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
     }
 
     else {
-      Node<T> head = firstNode;
-      n.setNext(head);
-      n.setPrev(head.getPrev());
-      head.getPrev().setNext(n);
-      head.setPrev(n);
-
-      firstNode = n;
+      n.setNext(firstNode);
+      n.setPrev(firstNode.getPrev());
+      firstNode.getPrev().setNext(n);
+      firstNode.setPrev(n);
     }
 
     return true;
@@ -85,32 +118,26 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
    * it is firstNode).
    */
   public T removeItem() {
-    T value = null;
-    switch (numOfEntries) {
-    case 0:
+    if (numOfEntries == 0)
       return null;
-    case 1:
-      value = firstNode.getData();
-      firstNode = null;
-      numOfEntries = 0;
-      return value;
-    case 2:
-      value = firstNode.getData();
-      Node<T> second = firstNode.getNext();
-      second.setNext(null);
-      second.setPrev(null);
-      firstNode = second;
-
-      numOfEntries--;
-      return value;
-    default:
-      value = firstNode.getData();
-      firstNode.getPrev().setNext(firstNode.getNext());
-      firstNode = firstNode.getNext();
-
-      numOfEntries--;
+    
+    numOfEntries--;
+    if (numOfEntries == 1) {
+      T value = firstNode.getData();
+      clear();
       return value;
     }
+
+    T value = firstNode.getData();
+
+    Node<T> head = firstNode;
+    Node<T> prev = firstNode.getPrev();
+
+    prev.setNext(head.getNext());
+    head.getNext().setPrev(prev);
+
+    firstNode = head.getNext();
+    return value;
   }
     
   /**
@@ -143,7 +170,25 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
    * your physical LinkedDS<T> class
    */
   public void reverse() {
+    if (numOfEntries == 0 || numOfEntries == 1)
+      return;
 
+    if (numOfEntries == 2) {
+      firstNode = firstNode.getNext();
+      return;
+    }
+
+    Node<T> head = firstNode;
+    Node<T> temp = null;
+    Node<T> current = firstNode;
+    do {
+      temp = current.getPrev();
+      current.setPrev(current.getNext());
+      current.setNext(temp);
+      current = current.getPrev();
+    } while (current != firstNode);
+
+    firstNode = firstNode.getNext();
   }
 
   /**
@@ -198,23 +243,21 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
 
     numOfEntries = size() - num;
 
-    switch (numOfEntries) {
-      case 1:
-        firstNode = firstNode.getPrev();
-        firstNode.setNext(null);
-        firstNode.setPrev(null);
-        break;
-      case 2:
-        firstNode.getPrev().setNext(null);
-        firstNode.getPrev().getPrev().setPrev(null);
-        firstNode = firstNode.getPrev();
-        break;
-      default:
-        Node<T> n = firstNode;
-        for (int counter = 0; counter < num; counter++) {
-          n = n.getNext();
-        }
-        n.setPrev(firstNode.getPrev());
+    if (numOfEntries == 1) {
+      
+      firstNode = firstNode.getPrev();
+      firstNode.setNext(null);
+      firstNode.setPrev(null);
+    } else {      
+      Node<T> n = firstNode;
+
+      for (int counter = 0; counter < num; counter++) {
+        n = n.getNext();
+      }
+
+      n.setPrev(firstNode.getPrev());
+      firstNode.getPrev().setNext(n);
+      firstNode = n;
     }
   }
 
