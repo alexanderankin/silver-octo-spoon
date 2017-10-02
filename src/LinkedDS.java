@@ -5,12 +5,22 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
   /**
    * This is a node on the DS
    */
-  public static class Node<T> {
+  public class Node<T> {
     private Node<T> next;
     private Node<T> prev;
     private T data;
     public Node() {
     }
+    public Node(T d) {
+      data = d;
+    }
+    public T getData() { return data; }
+    public Node<T> getNext() { return next; }
+    public void setNext(Node<T> n) { next = n; }
+    public Node<T> getPrev() { return prev; }
+    public void setPrev(Node<T> p) { prev = p; }
+    @Override
+    public String toString() { return data.toString(); }
   }
 
   /**
@@ -20,6 +30,7 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
   private int numOfEntries;
 
   public LinkedDS () {
+    firstNode = null;
     numOfEntries = 0;
   }
 
@@ -27,20 +38,79 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
     numOfEntries = 0;
   }
 
+  public void debug() {
+    Node<T> n = firstNode;
+    do {
+      System.out.println(n.getData());
+      n = n.getNext();
+    } while (n != firstNode);
+
+    System.out.println("done printing");
+  }
+
   /**
    * Add a new Object to the PrimQ<T> in the next available location. If all
    * goes well, return true.
+   * 
+   * Newest added object is furthest along from firstNode going "next".
    */
   public boolean addItem(T newEntry){
-    return false;
+    Node<T> n = new Node<T>(newEntry);
+    numOfEntries++;
+
+    if (firstNode == null) {
+      n.setNext(n);
+      n.setPrev(n);
+      firstNode = n;
+    }
+
+    else {
+      Node<T> head = firstNode;
+      n.setNext(head);
+      n.setPrev(head.getPrev());
+      head.getPrev().setNext(n);
+      head.setPrev(n);
+
+      firstNode = n;
+    }
+
+    return true;
   }
   
   /**
    * Remove and return the "oldest" item in the PrimQ.  If the PrimQ is empty,
    * return null.
+   * 
+   * Oldest added object is the closest along from firstNode going "next" (ie
+   * it is firstNode).
    */
   public T removeItem() {
-    return null;
+    T value = null;
+    switch (numOfEntries) {
+    case 0:
+      return null;
+    case 1:
+      value = firstNode.getData();
+      firstNode = null;
+      numOfEntries = 0;
+      return value;
+    case 2:
+      value = firstNode.getData();
+      Node<T> second = firstNode.getNext();
+      second.setNext(null);
+      second.setPrev(null);
+      firstNode = second;
+
+      numOfEntries--;
+      return value;
+    default:
+      value = firstNode.getData();
+      firstNode.getPrev().setNext(firstNode.getNext());
+      firstNode = firstNode.getNext();
+
+      numOfEntries--;
+      return value;
+    }
   }
     
   /**
@@ -61,7 +131,8 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
    * Reset the PrimQ to empty status by reinitializing the variables appropriately
    */
   public void clear() {
-
+    firstNode = null;
+    numOfEntries = 0;
   }
 
   /**
@@ -81,7 +152,10 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
    * different ways depending on the underlying implementation.  
    */
   public void shiftRight() {
-
+    Node<T> head = firstNode;
+    firstNode.getPrev().setNext(head);
+    firstNode.getNext().setPrev(head);
+    firstNode = head.getPrev();
   }
 
   /**
@@ -89,7 +163,10 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
    * end.  As above, this can be done in different ways.
    */
   public void shiftLeft() {
-
+    Node<T> head = firstNode;
+    firstNode.getPrev().setNext(head);
+    firstNode.getNext().setPrev(head);
+    firstNode = head.getNext();
   }
 
   /**
@@ -111,7 +188,34 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
    * list, the result should be an empty list.
    */
   public void leftShift(int num) {
+    if (num < 0)
+      throw new IllegalArgumentException();
 
+    if (num >= numOfEntries) {
+      clear();
+      return;
+    }
+
+    numOfEntries = size() - num;
+
+    switch (numOfEntries) {
+      case 1:
+        firstNode = firstNode.getPrev();
+        firstNode.setNext(null);
+        firstNode.setPrev(null);
+        break;
+      case 2:
+        firstNode.getPrev().setNext(null);
+        firstNode.getPrev().getPrev().setPrev(null);
+        firstNode = firstNode.getPrev();
+        break;
+      default:
+        Node<T> n = firstNode;
+        for (int counter = 0; counter < num; counter++) {
+          n = n.getNext();
+        }
+        n.setPrev(firstNode.getPrev());
+    }
   }
 
   /**
@@ -120,9 +224,38 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
    * shift out nodes 8, 7 and 6 and the old node 5 would now be the last node
    * in the list.  If num <= 0 rightShift should do nothing and if num >= the 
    * length of the list, the result should be an empty list.
+   * 
+   * NOT DONE
    */
   public void rightShift(int num) {
+    if (num < 0)
+      throw new IllegalArgumentException();
 
+    if (num >= numOfEntries) {
+      clear();
+      return;
+    }
+
+    numOfEntries = size() - num;
+
+    switch (numOfEntries) {
+      case 1:
+        firstNode = firstNode.getPrev();
+        firstNode.setNext(null);
+        firstNode.setPrev(null);
+        break;
+      case 2:
+        firstNode.getPrev().setNext(null);
+        firstNode.getPrev().getPrev().setPrev(null);
+        firstNode = firstNode.getPrev();
+        break;
+      default:
+        Node<T> n = firstNode;
+        for (int counter = 0; counter < num; counter++) {
+          n = n.getNext();
+        }
+        n.setPrev(firstNode.getPrev());
+    }
   }
 
   /**
@@ -138,7 +271,14 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
    * a left rotation.
    */
   public void leftRotate(int num) {
+    if (size() == 0)
+      return;
 
+    num = num % size();
+
+    for (; num--> 0;) {
+      shiftLeft();
+    }
   }
 
   /**
@@ -149,6 +289,13 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
    * length of the list and for num < 0 should be analogous to that described above for leftRotate.
    */
   public void rightRotate(int num) {
+    if (size() == 0)
+      return;
 
+    num = num % size();
+
+    for (; num--> 0;) {
+      shiftRight();
+    }
   }
 }

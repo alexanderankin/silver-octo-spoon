@@ -10,5 +10,5 @@ die () {
   exit $rc
 }
 
-javac src/*.java -d bin || die 1 "error compiling"
+javac src/*.java -g -d bin -Xlint:unchecked || die 1 "error compiling"
 java -cp bin Main
