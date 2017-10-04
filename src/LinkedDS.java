@@ -6,11 +6,11 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
    * This is a node on the DS
    */
   public static class Node<T> {
-    private Node<T> next;
-    private Node<T> prev;
-    private T data;
-    public Node() {
-    }
+    Node<T> next;
+    T data;
+    public Node() {}
+    public Node(T d) { data = d; }
+    public T getData() { return data; }
   }
 
   /**
@@ -24,7 +24,38 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
   }
 
   public LinkedDS (LinkedDS l) {
-    numOfEntries = 0;
+    numOfEntries = l.size();
+    if (numOfEntries == 0)
+      return;
+
+    Node<T> head = l.getHead();
+    firstNode = new Node(head.data);
+    Node<T> pointer = firstNode;
+
+    while (head.next != null) {
+      head = head.next;
+      pointer.next = new Node(head.data);
+      pointer = pointer.next;
+    }
+  }
+
+  private Node<T> getHead() {
+    return firstNode;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    Node<T> pointer = firstNode;
+    while (pointer != null) {
+      sb.append(pointer.data.toString());
+      sb.append(" ");
+      pointer = pointer.next;
+      if (pointer == firstNode) {
+        break;
+      }
+    }
+    return sb.toString();
   }
 
   /**
@@ -32,7 +63,16 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
    * goes well, return true.
    */
   public boolean addItem(T newEntry){
-    return false;
+    if (firstNode == null) {
+      firstNode = new Node(newEntry);
+    } else {
+      Node<T> temp = firstNode;
+      while (temp.next != null)
+        temp = temp.next;
+      temp.next = new Node(newEntry);
+    }
+    numOfEntries++;
+    return true;
   }
   
   /**
@@ -40,7 +80,14 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
    * return null.
    */
   public T removeItem() {
-    return null;
+    if (numOfEntries == 0) {
+      return null;
+    }
+
+    Node<T> temp = firstNode;
+    firstNode = temp.next;
+    numOfEntries--;
+    return temp.getData();
   }
     
   /**
@@ -61,7 +108,8 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
    * Reset the PrimQ to empty status by reinitializing the variables appropriately
    */
   public void clear() {
-
+    numOfEntries = 0;
+    firstNode = null;
   }
 
   /**
@@ -70,9 +118,23 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
    * versa.  The physical implementation of this can be done in 
    * many different ways, depending upon how you actually implemented
    * your physical LinkedDS<T> class
+   * 
+   * 
+   * UNTESTED
    */
   public void reverse() {
+    Node<T> prev = null;
+    Node<T> curr = firstNode;
+    Node<T> next = null;
 
+    while (curr != null) {
+      next = curr.next;
+      curr.next = prev;
+      prev = curr;
+      curr = next;
+    }
+
+    firstNode = prev;
   }
 
   /**
@@ -111,7 +173,11 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
    * list, the result should be an empty list.
    */
   public void leftShift(int num) {
+    numOfEntries = numOfEntries - num;
 
+    while (num--> 0 && firstNode != null) {
+      firstNode = firstNode.next;
+    }
   }
 
   /**
@@ -122,7 +188,14 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
    * length of the list, the result should be an empty list.
    */
   public void rightShift(int num) {
+    numOfEntries = numOfEntries - num;
 
+    int a = numOfEntries;
+    Node<T> pointer = firstNode;
+    for (; --a > 0; ) {
+      pointer = pointer.next;
+    }
+    pointer.next = null;
   }
 
   /**
@@ -138,7 +211,25 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
    * a left rotation.
    */
   public void leftRotate(int num) {
+    num = num % numOfEntries;
+    Node<T> tail = getNEl(num);
+    Node<T> newEnd = getNEl(num - 1);
+    Node<T> end = getNEl(numOfEntries - 1);
+    end.next = firstNode;
+    newEnd.next = null;
+    firstNode = tail;
+  }
 
+  /**
+   * return ith el, 0 indexed
+   */
+  private Node<T> getNEl(int i) {
+    // System.out.println("getNEl " + i);
+    Node<T> pointer = firstNode;
+    while (i-- > 0)
+      pointer = pointer.next;
+
+    return pointer;
   }
 
   /**
@@ -149,6 +240,14 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
    * length of the list and for num < 0 should be analogous to that described above for leftRotate.
    */
   public void rightRotate(int num) {
+    num = num % numOfEntries;
+    Node<T> a = getNEl(0);
+    Node<T> b = getNEl(num);
+    Node<T> c = getNEl(numOfEntries - 1);
+    Node<T> d = getNEl(num - 1);
 
+    c.next = a;
+    firstNode = b;
+    d.next = null;
   }
 }
