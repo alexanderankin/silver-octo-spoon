@@ -6,6 +6,8 @@ public class Main {
     }
 
     System.out.println(l);
+    l.reverse();
+    System.out.println(l);
     // Assig2A.main(args);
     
   }

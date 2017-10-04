@@ -212,12 +212,29 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
    */
   public void leftRotate(int num) {
     num = num % numOfEntries;
-    Node<T> tail = getNEl(num);
-    Node<T> newEnd = getNEl(num - 1);
-    Node<T> end = getNEl(numOfEntries - 1);
-    end.next = firstNode;
-    newEnd.next = null;
-    firstNode = tail;
+    Node<T> head = firstNode;
+    Node<T> reference = firstNode;
+    Node<T> middle = null;
+    Node<T> newTail = null;
+
+    int counter = 0;
+    while (reference != null) {
+      if (counter == num) {
+        firstNode = reference;
+      }
+      if (counter == (num - 1)) {
+        middle = reference;
+      }
+      if (counter == (numOfEntries - 1)) {
+        newTail = reference;
+        // reference.next = head;
+      }
+      reference = reference.next;
+      counter++;
+    }
+
+    newTail.next = head;
+    middle.next = null;
   }
 
   /**
