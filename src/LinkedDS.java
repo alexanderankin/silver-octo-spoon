@@ -1,3 +1,5 @@
+import java.util.Random;
+
 /**
  * This is a data structure.
  */
@@ -16,16 +18,16 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
   /**
    * This is the first Node in this list
    */
-  private Node<T> firstNode;
-  private int numOfEntries;
+  public Node<T> firstNode;
+  public int numberOfEntries;
 
   public LinkedDS () {
-    numOfEntries = 0;
+    numberOfEntries = 0;
   }
 
   public LinkedDS (LinkedDS l) {
-    numOfEntries = l.size();
-    if (numOfEntries == 0)
+    numberOfEntries = l.size();
+    if (numberOfEntries == 0)
       return;
 
     Node<T> head = l.getHead();
@@ -71,8 +73,20 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
         temp = temp.next;
       temp.next = new Node(newEntry);
     }
-    numOfEntries++;
+    numberOfEntries++;
     return true;
+  }
+
+  /**
+   * Performs unshift operation like standard Javascript method
+   * 
+   * @return updated size of array
+   */
+  public int unshift(T newEntry){
+    Node<T> item = new Node<T>(newEntry);
+    item.next = firstNode;
+    firstNode = item;
+    return ++numberOfEntries;
   }
   
   /**
@@ -80,13 +94,13 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
    * return null.
    */
   public T removeItem() {
-    if (numOfEntries == 0) {
+    if (numberOfEntries == 0) {
       return null;
     }
 
     Node<T> temp = firstNode;
     firstNode = temp.next;
-    numOfEntries--;
+    numberOfEntries--;
     return temp.getData();
   }
     
@@ -94,21 +108,21 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
    * Return true if the PrimQ is empty, and false otherwise.
    */
   public boolean empty() {
-    return numOfEntries == 0;
+    return numberOfEntries == 0;
   }
   
   /**
    * Return the number of items currently in the PrimQ.
    */
   public int size() {
-    return numOfEntries;
+    return numberOfEntries;
   }
 
   /**
    * Reset the PrimQ to empty status by reinitializing the variables appropriately
    */
   public void clear() {
-    numOfEntries = 0;
+    numberOfEntries = 0;
     firstNode = null;
   }
 
@@ -143,7 +157,20 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
    * different ways depending on the underlying implementation.  
    */
   public void shiftRight() {
+    Node<T> temp = null;
+    Node<T> reference = firstNode;
+    Node<T> penultimate = null;
 
+    while (reference.next != null) {
+      if (reference.next.next == null) {
+        penultimate = reference;
+      }
+      reference = reference.next;
+    }
+
+    reference.next = firstNode;
+    firstNode = reference;
+    penultimate.next = null;
   }
 
   /**
@@ -151,7 +178,17 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
    * end.  As above, this can be done in different ways.
    */
   public void shiftLeft() {
+    Node<T> last = firstNode;
+    firstNode = firstNode.next;
 
+    Node<T> reference = firstNode;
+    while (reference.next != null) {
+      reference = reference.next;
+    }
+
+    reference.next = last;
+    reference = reference.next;
+    reference.next = null;
   }
 
   /**
@@ -161,7 +198,21 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
    * DS could be arbitrary.
    */
   public void shuffle() {
+    Random r = new Random();
+    T temp;
 
+    for (int counter = 0; counter < 10; counter++) {
+      Node<T> list = firstNode;
+      while (list.next != null) {
+        if (r.nextDouble() > 0.5) {
+          temp = list.data;
+          list.data = list.next.data;
+          list.next.data = temp;
+        }
+
+        list = list.next;
+      }
+    }
   }
 
   /**
@@ -173,7 +224,7 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
    * list, the result should be an empty list.
    */
   public void leftShift(int num) {
-    numOfEntries = numOfEntries - num;
+    numberOfEntries = numberOfEntries - num;
 
     while (num--> 0 && firstNode != null) {
       firstNode = firstNode.next;
@@ -188,9 +239,9 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
    * length of the list, the result should be an empty list.
    */
   public void rightShift(int num) {
-    numOfEntries = numOfEntries - num;
+    numberOfEntries = numberOfEntries - num;
 
-    int a = numOfEntries;
+    int a = numberOfEntries;
     Node<T> pointer = firstNode;
     for (; --a > 0; ) {
       pointer = pointer.next;
@@ -211,7 +262,10 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
    * a left rotation.
    */
   public void leftRotate(int num) {
-    num = num % numOfEntries;
+    num = Math.floorMod(num, numberOfEntries);
+    if (num == 0) {
+      return;
+    }
     Node<T> head = firstNode;
     Node<T> reference = firstNode;
     Node<T> middle = null;
@@ -225,7 +279,7 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
       if (counter == (num - 1)) {
         middle = reference;
       }
-      if (counter == (numOfEntries - 1)) {
+      if (counter == (numberOfEntries - 1)) {
         newTail = reference;
         // reference.next = head;
       }
@@ -238,18 +292,6 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
   }
 
   /**
-   * return ith el, 0 indexed
-   */
-  private Node<T> getNEl(int i) {
-    // System.out.println("getNEl " + i);
-    Node<T> pointer = firstNode;
-    while (i-- > 0)
-      pointer = pointer.next;
-
-    return pointer;
-  }
-
-  /**
    * Same idea as leftRotate above, but in the opposite direction.  For example, if a list 
    * has 8 nodes in it (numbered from 1 to 8), a rightRotate of 3 would shift nodes 8, 7 and 
    * 6 to the beginning of the list, so that the old node 8 would now be node 3, the old node 
@@ -257,14 +299,6 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
    * length of the list and for num < 0 should be analogous to that described above for leftRotate.
    */
   public void rightRotate(int num) {
-    num = num % numOfEntries;
-    Node<T> a = getNEl(0);
-    Node<T> b = getNEl(num);
-    Node<T> c = getNEl(numOfEntries - 1);
-    Node<T> d = getNEl(num - 1);
-
-    c.next = a;
-    firstNode = b;
-    d.next = null;
+    leftRotate(-num);
   }
 }
