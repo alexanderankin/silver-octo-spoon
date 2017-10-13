@@ -79,6 +79,7 @@ public class ReallyLongInt 	extends LinkedDS<Integer>
     ReallyLongInt result = new ReallyLongInt();
     reverse();
     other.reverse();
+
     Node<Integer> lista = firstNode;
     Node<Integer> listb = other.firstNode;
 
@@ -86,14 +87,8 @@ public class ReallyLongInt 	extends LinkedDS<Integer>
     boolean carry = false;
 
     while (lista != null && listb != null) {
-      System.out.println("lista.data " + lista.data + " listb.data " + listb.data + " value from carry " + (carry ? 1 : 0));
-
       temp = lista.data + listb.data;
-
-      System.out.println("value = " + (temp > 10 ? temp % 10 : temp) + "temp " + temp + " carry " + (carry ? 1 : 0));
-      System.out.println("\t\tvalue + carry " + ((temp > 10 ? temp % 10 : temp) + (carry ? 1 : 0)));
       result.addItem((temp > 10 ? temp % 10 : temp) + (carry ? 1 : 0));
-
       carry = temp > 10;
 
       lista = lista.next;
@@ -104,7 +99,7 @@ public class ReallyLongInt 	extends LinkedDS<Integer>
       result.addItem(1);
     }
 
-    return result;
+    return null;
   }
 
   // You must implement the methods below.  See the descriptions in the
@@ -113,43 +108,33 @@ public class ReallyLongInt 	extends LinkedDS<Integer>
   public ReallyLongInt add(ReallyLongInt rightOp)
   {
     ReallyLongInt result = new ReallyLongInt();
-    Node<Integer> resultList = result.firstNode;
+    reverse();
+    rightOp.reverse();
 
     Node<Integer> lista = firstNode;
     Node<Integer> listb = rightOp.firstNode;
 
-    int lengtha = numberOfEntries;
-    int lengthb = rightOp.numberOfEntries;
-    // System.out.println("la " + lengtha + " lb " + lengthb);
+    int temp;
+    boolean carry = false;
 
-    if (lengtha != lengthb) {
-      if (lengtha > lengthb) {
-        for (int idx = 0; idx < (lengtha - lengthb); idx++) {
-          System.out.println("adding " + new Integer(lista.data));
-          result.addItem(new Integer(lista.data));
-          lista = lista.next;
-        }
-      } else {
-        for (int idx = 0; idx < (lengthb - lengtha); idx++) {
-          result.addItem(new Integer(listb.data));
-          listb = listb.next;
-        }
-
-      }
-    }
-    
     while (lista != null && listb != null) {
-      if ((lista.data + listb.data) < 10) {
-        result.unshift(lista.data + listb.data);
-      }
-      else {
-        System.out.println("result.firstNode.next.data " + result.firstNode.next.data);
-        result.firstNode.next.data = result.firstNode.next.data + 1;
-        result.unshift(lista.data + listb.data - 10);
-      }
+      temp = lista.data + listb.data;
+      result.addItem((temp > 10 ? temp % 10 : temp) + (carry ? 1 : 0));
+      carry = temp > 10;
+
       lista = lista.next;
       listb = listb.next;
     }
+
+    boolean firstIter = true;
+    Node<Integer> remainingList = (lista == null ? listb : lista);
+    while (remainingList != null) {
+      System.out.println(firstIter && carry ? remainingList.data : remainingList.data);
+      result.addItem(firstIter && carry ? remainingList.data : remainingList.data);
+      firstIter = false;
+      remainingList = remainingList.next;
+    }
+
     return result;
 	}
 	
@@ -160,7 +145,30 @@ public class ReallyLongInt 	extends LinkedDS<Integer>
    */
 	public ReallyLongInt subtract(ReallyLongInt rightOp)
 	{
-    return null;
+    ReallyLongInt result = new ReallyLongInt();
+    reverse();
+    rightOp.reverse();
+
+    Node<Integer> lista = firstNode;
+    Node<Integer> listb = rightOp.firstNode;
+
+    int temp;
+    boolean carry = false;
+
+    while (lista != null && listb != null) {
+      temp = (carry ? lista.data + 9 : lista.data) - listb.data;
+      result.addItem(temp < 0 ? temp + 10 : temp);
+      carry = temp < 0;
+
+      lista = lista.next;
+      listb = listb.next;
+    }
+
+    if (carry) {
+      result.addItem(1);
+    }
+
+    return result;
   }
 
 	public int compareTo(ReallyLongInt rOp)
