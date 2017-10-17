@@ -9,8 +9,8 @@ public class Main {
     // // System.out.println(R2);
     // // System.out.println(R1.equals(R2));
 
-    ReallyLongInt R3 = new ReallyLongInt("5");
-    ReallyLongInt R4 = new ReallyLongInt("3");
+    ReallyLongInt R3 = new ReallyLongInt("3999");
+    ReallyLongInt R4 = new ReallyLongInt("2");
     System.out.println(R3.add(R4));
 
 

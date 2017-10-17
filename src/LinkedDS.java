@@ -13,6 +13,23 @@ public class LinkedDS<T> implements PrimQ<T>, Reorder {
     public Node() {}
     public Node(T d) { data = d; }
     public T getData() { return data; }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder();
+      sb.append("Node @");
+      sb.append(this.hashCode());
+      sb.append(": [");
+
+      Node list = this.next;
+      while (list != null) {
+        sb.append(list.data);
+        sb.append(", ");
+      }
+      sb.append("]");
+
+      return sb.toString();
+    }
   }
 
   /**
