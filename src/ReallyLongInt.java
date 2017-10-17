@@ -137,9 +137,7 @@ public class ReallyLongInt 	extends LinkedDS<Integer>
       // System.out.println(_i);
       // result.addItem(_i);
 
-      System.out.println(result);
       result.addItem((temp >= 10 ? temp - 10 : temp) + (carry ? 1 : 0));
-      // System.out.println(result.toString());
       carry = temp >= 10;
 
       lista = lista.next;
@@ -151,7 +149,6 @@ public class ReallyLongInt 	extends LinkedDS<Integer>
     if(carry || remainingList != null) {
       temp = remainingList == null ? 0 : remainingList.data;
       temp += carry ? 1 : 0;
-      System.out.println(result);
       result.addItem(temp);
 
       if (remainingList != null) {
@@ -161,11 +158,6 @@ public class ReallyLongInt 	extends LinkedDS<Integer>
 
     boolean firstIter = true;
     while (remainingList != null) {
-      // System.out.println(firstIter && carry ? 1 + remainingList.data : remainingList.data);
-      // System.out.println(result);
-      // result.addItem(firstIter);
-
-      System.out.println(result);
       result.addItem(remainingList.data);
       firstIter = false;
       remainingList = remainingList.next;
