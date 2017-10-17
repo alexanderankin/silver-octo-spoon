@@ -120,36 +120,53 @@ public class ReallyLongInt 	extends LinkedDS<Integer>
 
     while (lista != null && listb != null) {
       temp = lista.data + listb.data;
-      _i = 0;
-      if (temp > 10) {
-        _i += temp % 10;
-      } else {
-        _i += temp;
-      }
+      // _i = 0;
+      // if (temp > 10) {
+      //   _i += temp % 10;
+      // } else {
+      //   _i += temp;
+      // }
 
-      if (carry) {
-        _i += 1;
-      }
+      // if (carry) {
+      //   _i += 1;
+      // }
 
-      if (_i > 10) {
-        System.out.println("_i > 10 " + _i);
-      }
+      // if (_i > 10) {
+      //   System.out.println("_i > 10 " + _i);
+      // }
+      // System.out.println(_i);
+      // result.addItem(_i);
 
-      // result.addItem((temp > 10 ? temp % 10 : temp) + (carry ? 1 : 0));
-      System.out.println(_i);
-      System.out.println(result.toString());
-      result.addItem(_i);
-      carry = temp > 10;
+      System.out.println(result);
+      result.addItem((temp >= 10 ? temp - 10 : temp) + (carry ? 1 : 0));
+      // System.out.println(result.toString());
+      carry = temp >= 10;
 
       lista = lista.next;
       listb = listb.next;
     }
 
-    boolean firstIter = true;
     Node<Integer> remainingList = (lista == null ? listb : lista);
+
+    if(carry || remainingList != null) {
+      temp = remainingList == null ? 0 : remainingList.data;
+      temp += carry ? 1 : 0;
+      System.out.println(result);
+      result.addItem(temp);
+
+      if (remainingList != null) {
+        remainingList = remainingList.next;
+      }
+    }
+
+    boolean firstIter = true;
     while (remainingList != null) {
       // System.out.println(firstIter && carry ? 1 + remainingList.data : remainingList.data);
-      result.addItem(firstIter && carry ? 1 + remainingList.data : remainingList.data);
+      // System.out.println(result);
+      // result.addItem(firstIter);
+
+      System.out.println(result);
+      result.addItem(remainingList.data);
       firstIter = false;
       remainingList = remainingList.next;
     }
