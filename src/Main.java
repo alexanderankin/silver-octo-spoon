@@ -9,10 +9,15 @@ public class Main {
     // // System.out.println(R2);
     // // System.out.println(R1.equals(R2));
 
-    ReallyLongInt R3 = new ReallyLongInt("5");
-    ReallyLongInt R4 = new ReallyLongInt("3");
-    System.out.println(R3.add(R4));
+    // ReallyLongInt R3 = new ReallyLongInt("5");
+    // ReallyLongInt R4 = new ReallyLongInt("3");
+    // System.out.println(R3.add(R4));
 
+    ReallyLongInt R1 = new ReallyLongInt("128");
+    ReallyLongInt R2 = new ReallyLongInt("34");
+    ReallyLongInt R3 = sum(R1, R2);
+
+    System.out.println(R3);
 
     System.exit(0);
 
@@ -22,6 +27,37 @@ public class Main {
     System.exit(0);
 
     
+  }
+
+  public static ReallyLongInt sum(ReallyLongInt a, ReallyLongInt b) {
+    ReallyLongInt r = new ReallyLongInt("");
+
+    ReallyLongInt n = new ReallyLongInt(a);
+    ReallyLongInt m = new ReallyLongInt(b);
+
+    boolean carry = false;
+    int temp;
+    while (n.size() != 0 && m.size() != 0) {
+      temp = n.removeItem() + m.removeItem() + (carry ? 1 : 0);
+      temp = temp >= 10 ? temp - 10 : temp;
+      carry = temp >= 10;
+
+      System.out.println(r);
+      addDigit(temp, r);
+    }
+
+    // ReallyLongInt longer = n.size() == 0 ? m : n;
+    // if (carry || ((temp = longer.removeItem()) != null)) {
+    //   addDigit()
+    // }
+
+    return r;
+  }
+
+  public static void addDigit(int i, ReallyLongInt a) {
+    a.reverse();
+    a.addItem(i);
+    a.reverse();
   }
 
   public static void main1(String[] args) {
