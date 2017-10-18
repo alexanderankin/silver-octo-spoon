@@ -107,13 +107,16 @@ public class ReallyLongInt 	extends LinkedDS<Integer>
   // You must implement the methods below.  See the descriptions in the
   // assignment sheet
 
-  public ReallyLongInt add(ReallyLongInt rightOp)
+  public ReallyLongInt add(ReallyLongInt rightOp_)
   {
+    ReallyLongInt rightOp = new ReallyLongInt(rightOp_);
+    ReallyLongInt me = new ReallyLongInt(this);
+
     ReallyLongInt result = new ReallyLongInt();
-    reverse();
+    me.reverse();
     rightOp.reverse();
 
-    Node<Integer> lista = firstNode;
+    Node<Integer> lista = me.firstNode;
     Node<Integer> listb = rightOp.firstNode;
 
     int temp;
@@ -143,6 +146,7 @@ public class ReallyLongInt 	extends LinkedDS<Integer>
       result.addItem(1);
     }
 
+    result.reverse();
     return result;
 	}
 	
@@ -151,18 +155,20 @@ public class ReallyLongInt 	extends LinkedDS<Integer>
    * First this method reverses the lists, such that the list start at the
    * first digit.
    */
-	public ReallyLongInt subtract(ReallyLongInt rightOp)
+	public ReallyLongInt subtract(ReallyLongInt rightOp_)
 	{
     // if (rightOp.size() > numberOfEntries) {
     //   throw new ArithmeticException("Invalid Difference -- Negative Number");
     //   // throw new IllegalArgumentException("No negative numbers allowed");
     // }
+    ReallyLongInt rightOp = new ReallyLongInt(rightOp_);
 
     ReallyLongInt result = new ReallyLongInt();
-    reverse();
+    ReallyLongInt me = new ReallyLongInt(this);
+    me.reverse();
     rightOp.reverse();
 
-    Node<Integer> lista = firstNode;
+    Node<Integer> lista = me.firstNode;
     Node<Integer> listb = rightOp.firstNode;
 
     int temp;
@@ -229,7 +235,7 @@ public class ReallyLongInt 	extends LinkedDS<Integer>
     // System.out.println("done printing from end of subtract");
 
 
-    resultClone.reverse();
+    // resultClone.reverse();
     return resultClone;
   }
 
