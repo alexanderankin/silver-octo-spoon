@@ -77,32 +77,6 @@ public class ReallyLongInt 	extends LinkedDS<Integer>
       list = list.next;
     }
   }
-  public ReallyLongInt debug(ReallyLongInt other) {
-    ReallyLongInt result = new ReallyLongInt();
-    reverse();
-    other.reverse();
-
-    Node<Integer> lista = firstNode;
-    Node<Integer> listb = other.firstNode;
-
-    int temp;
-    boolean carry = false;
-
-    while (lista != null && listb != null) {
-      temp = lista.data + listb.data;
-      result.addItem((temp > 10 ? temp % 10 : temp) + (carry ? 1 : 0));
-      carry = temp > 10;
-
-      lista = lista.next;
-      listb = listb.next;
-    }
-
-    if (carry) {
-      result.addItem(1);
-    }
-
-    return null;
-  }
 
   // You must implement the methods below.  See the descriptions in the
   // assignment sheet
@@ -157,14 +131,10 @@ public class ReallyLongInt 	extends LinkedDS<Integer>
    */
 	public ReallyLongInt subtract(ReallyLongInt rightOp_)
 	{
-    // if (rightOp.size() > numberOfEntries) {
-    //   throw new ArithmeticException("Invalid Difference -- Negative Number");
-    //   // throw new IllegalArgumentException("No negative numbers allowed");
-    // }
     ReallyLongInt rightOp = new ReallyLongInt(rightOp_);
+    ReallyLongInt me = new ReallyLongInt(this);
 
     ReallyLongInt result = new ReallyLongInt();
-    ReallyLongInt me = new ReallyLongInt(this);
     me.reverse();
     rightOp.reverse();
 
@@ -187,28 +157,19 @@ public class ReallyLongInt 	extends LinkedDS<Integer>
     Node<Integer> remainingList = lista;
     while (remainingList != null) {
       temp = remainingList.data - (carry ? 1 : 0);
-      // System.out.println(temp);
-      // System.out.println(remainingList.data);
       result.addItem(temp < 0 ? temp + 10 : temp);
       carry = temp < 0;
       
-      // System.out.println("result.toString()" + result.toString());
-      // System.exit(0);
-      // result.addItem(firstIter && carry ? remainingList.data - 1 : remainingList.data);
-      // System.out.println("last:\t\t" + (remainingList.data - (carry ? 1 : 0)));
       lastzero = (remainingList.data - (carry ? 1 : 0)) == 0;
       remainingList = remainingList.next;
     }
 
-    // System.out.println(carry);
     if (carry) {
       throw new ArithmeticException("Invalid Difference -- Negative Number");
     }
 
-    // System.out.println("printing from end of subtract");
     ReallyLongInt resultClone = new ReallyLongInt(result);
     resultClone.reverse();
-    // Node<Integer> resultCloneHead = resultClone.firstNode;
 
     for (;;) {
       try {
@@ -231,11 +192,6 @@ public class ReallyLongInt 	extends LinkedDS<Integer>
       }
     }
 
-
-    // System.out.println("done printing from end of subtract");
-
-
-    // resultClone.reverse();
     return resultClone;
   }
 
@@ -244,7 +200,6 @@ public class ReallyLongInt 	extends LinkedDS<Integer>
     ReallyLongInt me = new ReallyLongInt(this);
     ReallyLongInt other = new ReallyLongInt(rOp);
     if (me.equals(other)) return 0;
-    // return (me.subtract(other) == null ? -1 : 1);
     try {
       me.subtract(other);
       return 1;
