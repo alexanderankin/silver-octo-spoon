@@ -1,7 +1,19 @@
 public class Main {
   public static void main(String[] args) {
     RLITest.main(args);
+    // System.out.println(new ReallyLongInt("4444").equals(new ReallyLongInt("4444")));
     System.exit(0);
+
+
+    // ReallyLongInt R1 = new ReallyLongInt("1234567");
+    ReallyLongInt R1 = new ReallyLongInt("12");
+    System.out.println(R1);
+    System.exit(0);
+    R1.multTenToThe(6);
+    System.out.println(R1);
+    R1.divTenToThe(8);
+    System.out.println(R1);
+    System.out.println();
 
     // ReallyLongInt R1 = new ReallyLongInt("123456789");
     // // R1.multTenToThe(2);
@@ -11,9 +23,17 @@ public class Main {
     // // System.out.println(R2);
     // // System.out.println(R1.equals(R2));
 
-    ReallyLongInt R3 = new ReallyLongInt("1");
-    ReallyLongInt R4 = new ReallyLongInt("999");
-    System.out.println(R3.add(R4));
+
+    /*// negative number carry is true
+    ReallyLongInt R3 = new ReallyLongInt("101");
+    ReallyLongInt R4 = new ReallyLongInt("102");
+    System.out.println(R3.subtract(R4));*/
+
+    // negative number carry is true
+// node -p "444444544444448 > 444444444444448"
+    ReallyLongInt R3 = new ReallyLongInt("444444544444448");
+    ReallyLongInt R4 = new ReallyLongInt("444444444444448");
+    System.out.println(R3.subtract(R4));
 
 
     System.exit(0);
