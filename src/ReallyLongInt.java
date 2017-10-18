@@ -249,16 +249,16 @@ public class ReallyLongInt 	extends LinkedDS<Integer>
 	public void multTenToThe(int num)
 	{
     for (; num--> 0; ) {
-      Node<Integer> zero = new Node<Integer>(new Integer(0));
-      zero.next = firstNode;
-      firstNode = zero;
+      addItem(0);
     }
   }
 
   public void divTenToThe(int num)
   {
+    this.reverse();
     for (; num-- > 0; ) {
       this.removeItem();
     }
+    this.reverse();
 	}
 }
