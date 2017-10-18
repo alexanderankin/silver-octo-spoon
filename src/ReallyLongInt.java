@@ -54,7 +54,7 @@ public class ReallyLongInt 	extends LinkedDS<Integer>
 	// limitations of the super classes it is what we must do.
 	public String toString()
 	{
-    // this.reverse();
+    this.reverse();
     StringBuilder sb = new StringBuilder();
     if (numberOfEntries > 0)
     {
@@ -65,7 +65,7 @@ public class ReallyLongInt 	extends LinkedDS<Integer>
       }
       this.reverse();
     }
-    // this.reverse();
+    this.reverse();
 		return sb.toString();
 	}
 
