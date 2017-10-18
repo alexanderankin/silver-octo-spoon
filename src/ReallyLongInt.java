@@ -54,16 +54,18 @@ public class ReallyLongInt 	extends LinkedDS<Integer>
 	// limitations of the super classes it is what we must do.
 	public String toString()
 	{
-		StringBuilder sb = new StringBuilder();
-		if (numberOfEntries > 0)
-		{
-			this.reverse();
-			for (Node curr = firstNode; curr != null; curr = curr.next)
-			{
-				sb.append(curr.data);
-			}
-			this.reverse();
-		}
+    // this.reverse();
+    StringBuilder sb = new StringBuilder();
+    if (numberOfEntries > 0)
+    {
+      this.reverse();
+      for (Node curr = firstNode; curr != null; curr = curr.next)
+      {
+        sb.append(curr.data);
+      }
+      this.reverse();
+    }
+    // this.reverse();
 		return sb.toString();
 	}
 
@@ -187,7 +189,7 @@ public class ReallyLongInt 	extends LinkedDS<Integer>
       // System.out.println("result.toString()" + result.toString());
       // System.exit(0);
       // result.addItem(firstIter && carry ? remainingList.data - 1 : remainingList.data);
-      System.out.println("last:\t\t" + (remainingList.data - (carry ? 1 : 0)));
+      // System.out.println("last:\t\t" + (remainingList.data - (carry ? 1 : 0)));
       lastzero = (remainingList.data - (carry ? 1 : 0)) == 0;
       remainingList = remainingList.next;
     }
@@ -204,14 +206,21 @@ public class ReallyLongInt 	extends LinkedDS<Integer>
 
     for (;;) {
       try {
-
+        if (resultClone.size() == 0) {
+          break;
+        }
       temp = resultClone.removeItem();
       } catch (Exception e) {
+        System.out.println(resultClone.size());
+        e.printStackTrace();
+        // System.out.println(e);
         System.out.println("caught npe");
         break;
       }
       if (temp != 0) {
+        resultClone.reverse();
         resultClone.addItem(temp);
+        resultClone.reverse();
         break;
       }
     }
@@ -220,6 +229,7 @@ public class ReallyLongInt 	extends LinkedDS<Integer>
     // System.out.println("done printing from end of subtract");
 
 
+    resultClone.reverse();
     return resultClone;
   }
 
